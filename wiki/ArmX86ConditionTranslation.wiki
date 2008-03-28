@@ -29,8 +29,11 @@ code from one instruction set to the other.
  would break the semantics of the program. Consider the case where the
  sequence of ARM instructions is as follows:
    sub R10, R10, R10 (encoded with S = 1)
+
    add R2, R1, R0 (encoded with S = 0)
+
    beq <addr> (branch if 0)
+
  Here the sub instruction changes the zero flag. The add that follows it
  normally would but does not in this case because 'S' is cleared in the
  encoding of the instruction. The beq instruction uses the result of the
@@ -55,8 +58,10 @@ code from one instruction set to the other.
  binary translator and meant to be a snapshot of the x86 flags. When an
  instruction has the 'S' bit set to 1, this variable is loaded into the x86
  flags register using the following combination of instructions:
-   push <flags> /* Pushes the global flags variable on to the stack */
-   popf         /* Loads the flags register from the top of the stack */
+   push <flags>  *Pushes the global flags variable on to the stack*
+
+   popf          *Loads the flags register from the top of the stack*
+
  This is like loading the last flag context, i.e. the context created by the
  last instruction to modify the flags.
  An instruction that checks the condition and executes can then proceed
@@ -65,10 +70,12 @@ code from one instruction set to the other.
  Once the instruction has been completed, if the flags have been updated,
  the snapshot of the flags must once again be saved. This is done by the
  following combination of instructions:
-   pushf        /* Pushes the flags register to the stack */
-   pop <flags>  /* Loads the flags variable from the top of the stack */
+
+   pushf        *Pushes the flags register to the stack*
+
+   pop <flags>  *Loads the flags variable from the top of the stack*
+
  This strategy ensures that even if there are instructions that do not
  modify flags that are placed in between instructions that do and those
  that check them (such a strategy may be adopted for optimization when the
  compiler wants to keep the pipeline full), the logic remains valid.
-
