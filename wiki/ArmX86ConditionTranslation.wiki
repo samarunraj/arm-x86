@@ -28,6 +28,7 @@ code from one instruction set to the other.
  possibly the sign and overflow flags. Clearly, a one-to-one translation
  would break the semantics of the program. Consider the case where the
  sequence of ARM instructions is as follows:
+
    sub R10, R10, R10 (encoded with S = 1)
 
    add R2, R1, R0 (encoded with S = 0)
@@ -58,6 +59,7 @@ code from one instruction set to the other.
  binary translator and meant to be a snapshot of the x86 flags. When an
  instruction has the 'S' bit set to 1, this variable is loaded into the x86
  flags register using the following combination of instructions:
+
    push <flags>  *Pushes the global flags variable on to the stack*
 
    popf          *Loads the flags register from the top of the stack*
